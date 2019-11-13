@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'icon_content.dart';
+import 'reusable_card.dart';
 
 const bottomHeight = 80.0;
-const widgetColor = Color(0xFF1D1E33);
+const activeCardColor = Color(0xFF1D1E33);
+const inActiveCardColor = Color(0xFF111328);
 const bottomContainerColor = Color(0xFFEb1555);
 
 class InputPage extends StatefulWidget {
@@ -10,6 +14,28 @@ class InputPage extends StatefulWidget {
 }
 
 class _InputPageState extends State<InputPage> {
+  Color maleCardColor = inActiveCardColor;
+  Color femaleCardColor = inActiveCardColor;
+
+  //male = 1, female = 0
+  void updateColor(int gender) {
+    if (gender == 1) {
+      if (maleCardColor == inActiveCardColor) {
+        maleCardColor = activeCardColor;
+        femaleCardColor = inActiveCardColor;
+      } else {
+        maleCardColor = inActiveCardColor;
+      }
+    } else {
+      if (femaleCardColor == inActiveCardColor) {
+        femaleCardColor = activeCardColor;
+        maleCardColor = inActiveCardColor;
+      } else {
+        femaleCardColor = inActiveCardColor;
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,20 +49,46 @@ class _InputPageState extends State<InputPage> {
             child: Row(
               children: <Widget>[
                 Expanded(
-                  child: ReusableCard(customColor: widgetColor),
+                  child: GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        updateColor(1);
+                      });
+                    },
+                    child: ReusableCard(
+                      customColor: maleCardColor,
+                      cardChild: IconContent(
+                        genderText: 'MALE',
+                        genderIcon: FontAwesomeIcons.mars,
+                      ),
+                    ),
+                  ),
                 ),
                 Expanded(
-                  child: ReusableCard(customColor: widgetColor),
-                ),
+                  child: GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        updateColor(0);
+                      });
+                    },
+                    child: ReusableCard(
+                      customColor: femaleCardColor,
+                      cardChild: IconContent(
+                        genderText: 'FEMLAE',
+                        genderIcon: FontAwesomeIcons.venus,
+                      ),
+                    ),
+                  ),
+                )
               ],
             ),
           ),
           Expanded(
-            flex: 2,
+            flex: 1,
             child: Row(
               children: <Widget>[
                 Expanded(
-                  child: ReusableCard(customColor: widgetColor),
+                  child: ReusableCard(customColor: activeCardColor),
                 ),
               ],
             ),
@@ -46,10 +98,10 @@ class _InputPageState extends State<InputPage> {
             child: Row(
               children: <Widget>[
                 Expanded(
-                  child: ReusableCard(customColor: widgetColor),
+                  child: ReusableCard(customColor: activeCardColor),
                 ),
                 Expanded(
-                  child: ReusableCard(customColor: widgetColor),
+                  child: ReusableCard(customColor: activeCardColor),
                 ),
               ],
             ),
@@ -61,23 +113,6 @@ class _InputPageState extends State<InputPage> {
             margin: EdgeInsets.only(top: 10.0),
           )
         ],
-      ),
-    );
-  }
-}
-
-class ReusableCard extends StatelessWidget {
-  ReusableCard({@required this.customColor});
-
-  final Color customColor;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.all(15.0),
-      decoration: BoxDecoration(
-        color: customColor,
-        borderRadius: BorderRadius.circular(10.0),
       ),
     );
   }
